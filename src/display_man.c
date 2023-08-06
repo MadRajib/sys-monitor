@@ -3,6 +3,10 @@
 #include "display_man.h"
 #include "system_info.h"
 
+
+/* display_top 
+ * writes texts to the top window of the screen
+ */
 void display_top(WINDOW *win, sys_info_t *sys_info) {
 	int row = 0;
 	mvwprintw(win, ++row, 2, "OS		   : %s", sys_info->os);
@@ -15,6 +19,11 @@ void display_top(WINDOW *win, sys_info_t *sys_info) {
 	wrefresh(win);
 }
 
+/*
+ * Display Manager 
+ * initializes all the windows and updates them
+ * preodically.
+ */
 void display_sys_win( sys_info_t *sys_info) {
 	int wmax_x = 0;
 	initscr();

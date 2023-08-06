@@ -12,7 +12,10 @@
 #define CPU_STAT_FILENME "/stat"
 #define MEM_STAT_FILENME "/meminfo"
 
-
+/*
+ * Returns the position of char when a paticular
+ * char is seen.
+ */
 int skip_len_until(char *line, const char s){
     int len = 0;
     char *ptr = line;
@@ -23,6 +26,9 @@ int skip_len_until(char *line, const char s){
     return len - 1;
 }
 
+/*
+ * Returns len when a different char is seen.
+ */
 int skip_len_while(char *line, const char s){
     int len = 0;
     char *ptr = line;
@@ -33,6 +39,9 @@ int skip_len_while(char *line, const char s){
     return len + 1;
 }
 
+/*
+ * Extracts current os from OS_NAME_FILENAME.
+ */
 void lnx_parse_os_name(char *os_name, ssize_t maxlen) {
 	FILE *fp = NULL;
 	ssize_t nread;
@@ -62,6 +71,10 @@ ERROR:
 	line = NULL;
 }
 
+/*
+ * Extracts current kernel version details from
+ * PROC_DIR KERNEL_VERSION_FILENAME
+ */
 void lnx_parse_kernel_version(char *kernel_version, ssize_t maxlen) {
 	FILE *fp = NULL;
 	ssize_t nread;
@@ -99,6 +112,10 @@ ERROR:
 	line = NULL;
 }
 
+/*
+ * Extract current time in secs from PROC_DIR OS_UPTIME_FILENME
+ * and convert it to HH:MM:SS string format.
+ */
 long lnx_parse_uptime(){
 	FILE *fp = NULL;
 	ssize_t nread;
@@ -135,6 +152,10 @@ ERROR:
     return val;
 }
 
+/*
+ * Extract total number of processes present 
+ * and running processes from PROC_DIR CPU_STAT_FILENME,
+ */
 void lnx_parse_total_processes(procs_info_t *proc_info){
 	FILE *fp = NULL;
 	ssize_t nread;
