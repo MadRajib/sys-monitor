@@ -196,10 +196,6 @@ ERROR:
     tmp_str = NULL;
 }
 
-void lnx_parse_runing_process(){
-	printf("runing processes");
-}
-
 void lnx_parse_mem_stat(){
 	printf("mem stat");
 }
