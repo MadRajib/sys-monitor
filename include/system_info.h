@@ -11,6 +11,8 @@ typedef struct {
     char *kernel;
     long uptime;
     procs_info_t procs_info;
+    float cpu_utilisation;
+    float mem_utilisation;
 }sys_info_t; 
 
 void system_init_info(sys_info_t **sys_info);
@@ -18,6 +20,8 @@ void system_dinit_info(sys_info_t **sys_info);
 void system_get_info(sys_info_t *sys_info);
 void system_get_time(sys_info_t *sys_info);
 void system_get_processes_info(sys_info_t *sys_info);
+void system_get_cpu_utilisation(sys_info_t *sys_info);
+void system_get_mem_utilisation(sys_info_t *sys_info);
 
 #endif
 

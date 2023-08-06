@@ -42,3 +42,12 @@ void system_get_time(sys_info_t *sys_info){
 void system_get_processes_info(sys_info_t *sys_info){
     lnx_parse_total_processes(&sys_info->procs_info);
 }
+
+
+void system_get_cpu_utilisation(sys_info_t *sys_info) {
+    sys_info->cpu_utilisation = 0.2;
+}
+
+void system_get_mem_utilisation(sys_info_t *sys_info) {
+    sys_info->mem_utilisation = 0.2;
+}

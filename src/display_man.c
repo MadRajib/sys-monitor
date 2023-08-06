@@ -1,3 +1,4 @@
+#include <curses.h>
 #include<ncurses.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -15,12 +16,20 @@ void display_top(WINDOW *win, sys_info_t *sys_info, char **mem_pb, char **cpu_pb
 	mvwprintw(win, ++row, 2, "OS		   : %s", sys_info->os);
 	mvwprintw(win, ++row, 2, "Kernel	   : %s", sys_info->kernel);
 	mvwprintw(win, ++row, 2, "Uptime	   : HH:%02ld-MM:%02ld-SS:%02ld", (sys_info->uptime % 86400)/3600, (sys_info->uptime%3600)/ 60, (sys_info->uptime)%60);
-	display_generate_progress_bar(50, 10, mem_pb, 0.2);
-	display_generate_progress_bar(50, 10, cpu_pb, 0.2);
+
+	display_generate_progress_bar(50, 10, mem_pb, sys_info->mem_utilisation);
+	display_generate_progress_bar(50, 10, cpu_pb, sys_info->cpu_utilisation);
+    
     mvwprintw(win, ++row, 2, "CPU		   :");
+    wattron(win, COLOR_PAIR(1));
     wprintw(win, "%s", (*cpu_pb));
-	mvwprintw(win, ++row, 2, "MEM		   :");
+    wattroff(win, COLOR_PAIR(1));	
+
+    mvwprintw(win, ++row, 2, "MEM		   :");
+    wattron(win, COLOR_PAIR(1));
     wprintw(win, "%s", (*mem_pb));
+    wattroff(win, COLOR_PAIR(1));
+
 	mvwprintw(win, ++row, 2, "Total Processes  : %lld", sys_info->procs_info.total_processes);
 	mvwprintw(win, ++row, 2, "Running Processes: %lld", sys_info->procs_info.running_processes);
 	wrefresh(win);
@@ -53,6 +62,8 @@ void display_sys_win( sys_info_t *sys_info) {
 		box(top_win, 0, 0);
         system_get_time(sys_info);
         system_get_processes_info(sys_info);
+        system_get_cpu_utilisation(sys_info);
+        system_get_mem_utilisation(sys_info);
 		display_top(top_win, sys_info, &mem_pb, &cpu_pb);
 		wrefresh(top_win);
 		refresh();
