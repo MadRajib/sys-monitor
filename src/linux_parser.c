@@ -196,10 +196,55 @@ ERROR:
     tmp_str = NULL;
 }
 
-void lnx_parse_mem_stat(){
-	printf("mem stat");
+/*
+ * Extract totalmem and freemem and calculate mem
+ * utilisation.
+ */
+float lnx_parse_mem_stat(){
+	FILE *fp = NULL;
+	ssize_t nread;
+	size_t len = 0;
+	char *line = NULL;
+	const char *key_1 = "MemTotal";
+	const char *key_2 = "MemFree";
+    char *tmp_str = NULL, *endptr;
+    tmp_str = calloc(1, 1024);
+    long total_mem = 0;
+    long free_mem = 0;
+
+
+	fp = fopen(PROC_DIR MEM_STAT_FILENME, "r");
+	if (!fp) {
+		fprintf(stderr, "error while opening the file %s error %d\n", PROC_DIR MEM_STAT_FILENME, errno);
+		return 0;
+	}
+
+	while ((nread = getline(&line, &len, fp)) != -1) {
+		if(line && (strncmp(line, key_1, strlen(key_1)) == 0)) {
+			strcpy(tmp_str, line + strlen(key_1) + 1);
+			tmp_str[strlen(tmp_str) - 1] = '\0';
+            total_mem = strtol(tmp_str, &endptr, 10);
+
+		}else if(line && (strncmp(line, key_2, strlen(key_2)) == 0)){
+			strcpy(tmp_str, line + strlen(key_2) + 1);
+			tmp_str[strlen(tmp_str) - 1] = '\0';
+            free_mem = strtol(tmp_str, &endptr, 10);
+			goto ERROR;
+        }
+	}
+ERROR:
+	free(line);
+	fclose(fp);
+	line = NULL;
+    free(tmp_str);
+    tmp_str = NULL;
+
+    return (float)(total_mem - free_mem) / total_mem;
 }
 
-void lnx_parse_cpu_stat(){
-	printf("cpu stat");
+/*
+ * TODO
+ */
+float lnx_parse_cpu_stat(){
+    return 0;
 }

@@ -45,9 +45,9 @@ void system_get_processes_info(sys_info_t *sys_info){
 
 
 void system_get_cpu_utilisation(sys_info_t *sys_info) {
-    sys_info->cpu_utilisation = 0.2;
+    sys_info->cpu_utilisation = lnx_parse_cpu_stat();
 }
 
 void system_get_mem_utilisation(sys_info_t *sys_info) {
-    sys_info->mem_utilisation = 0.2;
+    sys_info->mem_utilisation = lnx_parse_mem_stat();
 }
