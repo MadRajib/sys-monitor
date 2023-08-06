@@ -12,6 +12,9 @@
 #define CPU_STAT_FILENME "/stat"
 #define MEM_STAT_FILENME "/meminfo"
 
+static long prev_idle_cpu_time = 0;
+static long prev_total_cpu_time = 0;
+
 /*
  * Returns the position of char when a paticular
  * char is seen.
@@ -246,5 +249,61 @@ ERROR:
  * TODO
  */
 float lnx_parse_cpu_stat(){
-    return 0;
+	FILE *fp = NULL;
+	ssize_t nread;
+	size_t len = 0;
+	char *line = NULL;
+	const char *key_1 = "cpu";
+    char *tmp_str = NULL, *endptr;
+    tmp_str = calloc(1, 1024);
+    long cpu_time = 0;
+    long total_cpu_time = 0;
+    long idle_cpu_time = 0;
+    long diff_idle = 0;
+    long diff_total = 0;
+    float diff_usage = 0;
+
+    (void)total_cpu_time;
+    (void)idle_cpu_time;
+
+
+	fp = fopen(PROC_DIR CPU_STAT_FILENME, "r");
+	if (!fp) {
+		fprintf(stderr, "error while opening the file %s error %d\n", PROC_DIR CPU_STAT_FILENME, errno);
+		return 0;
+	}
+
+	while ((nread = getline(&line, &len, fp)) != -1) {
+		if(line && (strncmp(line, key_1, strlen(key_1)) == 0)) {
+			strcpy(tmp_str, line + strlen(key_1) + 1);
+			tmp_str[strlen(tmp_str) - 1] = '\0';
+            break;
+        }
+	}
+
+    if(tmp_str[0]!= '\0'){
+        char *pch = strtok(tmp_str, " ");
+        int count = 0;
+        while (pch != NULL) {
+            cpu_time = strtol(pch, &endptr, 10);
+            total_cpu_time += cpu_time;
+            if(count == 3 || count == 4)
+                idle_cpu_time += cpu_time;
+            pch =  strtok(NULL, " ");
+            count ++;
+        }
+        diff_idle = idle_cpu_time - prev_idle_cpu_time;
+        diff_total = total_cpu_time - prev_total_cpu_time;
+        diff_usage = (float)(diff_total - diff_idle) / diff_total;
+
+        prev_total_cpu_time = total_cpu_time;
+        prev_idle_cpu_time = idle_cpu_time;
+    }
+
+	free(line);
+	fclose(fp);
+	line = NULL;
+    free(tmp_str);
+    tmp_str = NULL;
+    return diff_usage;
 }

@@ -93,6 +93,6 @@ static void display_generate_progress_bar(int max_len, int end_len, char **pb, f
     for( int i = 0; i < max_len - 1; i++ )
        (*pb)[i] = (i < bars_count)?'|':' ';
 
-    sprintf((*pb) + max_len - 1, "%02d/100%s", (int)(ratio * 100), "%");
+    sprintf((*pb) + max_len - 1, "%.2f/100%s", ratio * 100, "%");
     
 }
